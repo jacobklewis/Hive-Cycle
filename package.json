@@ -1,9 +1,13 @@
 {
     "name": "hive-cycle",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A modular TypeScript framework for background task processing",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "files": [
+        "dist/src",
+        "README.md"
+    ],
     "scripts": {
         "build": "tsc",
         "prepublishOnly": "npm run build"
@@ -16,6 +20,7 @@
         "typescript"
     ],
     "author": "Jacob K Lewis",
+    "repository": "jacobklewis/Hive-Cycle",
     "license": "MIT",
     "devDependencies": {
         "typescript": "^5.0.0",
