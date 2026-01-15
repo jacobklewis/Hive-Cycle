@@ -1,0 +1,24 @@
+{
+    "name": "hive-cycle",
+    "version": "0.1.0",
+    "description": "A modular TypeScript framework for background task processing",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "queue",
+        "background-jobs",
+        "task-runner",
+        "framework",
+        "typescript"
+    ],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@types/node": "^20.0.0"
+    }
+}
