@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*" # Runs when tags like 'v1.0.0' are pushed
+    branches: ["master", "develop"]
 permissions:
   id-token: write
   contents: read
@@ -30,6 +31,6 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
-      - run: npm publish # Publishes to npm
+      - run: npm publish --provenance # Publishes to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
