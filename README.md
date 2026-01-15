@@ -1,4 +1,4 @@
-![HiveCycle Logo](logo.jpg)
+![HiveCycle Logo](logo.png)
 
 # HiveCycle
 
@@ -131,4 +131,4 @@ class MyRedisQueue implements QueueAdapter {
 
 ## License
 
-ISC
+MIT

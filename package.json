@@ -15,8 +15,8 @@
         "framework",
         "typescript"
     ],
-    "author": "",
-    "license": "ISC",
+    "author": "Jacob K Lewis",
+    "license": "MIT",
     "devDependencies": {
         "typescript": "^5.0.0",
         "@types/node": "^20.0.0"
