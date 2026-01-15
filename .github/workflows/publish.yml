@@ -33,4 +33,4 @@ jobs:
       - run: npm test
       - run: npm publish --provenance # Publishes to npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ""
