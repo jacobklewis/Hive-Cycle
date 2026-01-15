@@ -25,9 +25,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: "https://registry.npmjs.org" # Sets npm registry
           cache: "npm"
           cache-dependency-path: "./package-lock.json"
       - run: npm ci
       - run: npm run build
       - run: npm test
       - run: npm publish --provenance # Publishes to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
