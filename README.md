@@ -11,6 +11,7 @@ A modular, type-safe TypeScript framework for running background task queues. `H
 - **Modular**: Abstract `QueueAdapter` allowing you to swap the default In-Memory queue for Redis, RabbitMQ, or SQL/NoSQL databases.
 - **Concurrency Control**: Limit how many tasks are processed simultaneously.
 - **Recurring Tasks**: Built-in support for tasks that automatically requeue themselves (cron-like behavior).
+- **Health Monitoring**: Optional HTTP endpoint to monitor service health and metrics.
 
 ## Installation
 
@@ -82,7 +83,7 @@ await app.enqueue(
   {
     requeue: true,
     requeueDelay: 5000, // Run again 5 seconds after completion
-  }
+  },
 );
 ```
 
@@ -101,9 +102,30 @@ const app = new HiveCycle({
   // Custom logger (defaults to console)
   logger: myLogger,
 
+  // Start a health check server on this port
+  healthPort: 3000,
+
   // Custom Queue Adapter (defaults to MemoryQueue)
   queue: new RedisQueueAdapter(),
 });
+```
+
+### Health Check
+
+If you provide a `healthPort` in the configuration, an HTTP server will start and expose a `/health` endpoint.
+
+```bash
+curl http://localhost:3000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "running": true,
+  "activeCount": 2
+}
 ```
 
 ### Custom Queue Adapter
