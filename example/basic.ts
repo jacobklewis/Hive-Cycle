@@ -8,6 +8,7 @@ interface MyTasks {
 const app = new HiveCycle<MyTasks>({
   maxConcurrency: 2,
   pollingInterval: 500,
+  healthPort: 8080,
 });
 
 // Register a handler for 'email' tasks

@@ -1,6 +1,6 @@
 {
     "name": "hive-cycle",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "A modular TypeScript framework for background task processing",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

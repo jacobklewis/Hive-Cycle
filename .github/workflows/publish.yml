@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*" # Runs when tags like 'v1.0.0' are pushed
-    branches: ["master", "develop"]
 permissions:
   id-token: write
   contents: read

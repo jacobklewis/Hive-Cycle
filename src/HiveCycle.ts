@@ -1,3 +1,4 @@
+import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 import {
   HiveCycleOptions,
   QueueAdapter,
@@ -19,13 +20,16 @@ function generateId(): string {
 }
 
 export class HiveCycle<
-  TaskMap extends Record<string, any> = Record<string, any>
+  TaskMap extends Record<string, any> = Record<string, any>,
 > {
   private queue: QueueAdapter;
   private handlers: Map<string, TaskHandler> = new Map();
   private isRunning: boolean = false;
-  private options: Required<HiveCycleOptions>;
+  private options: Required<Omit<HiveCycleOptions, "healthPort">> & {
+    healthPort?: number;
+  };
   private activeCount: number = 0;
+  private server?: Server;
 
   constructor(options: HiveCycleOptions = {}) {
     this.options = {
@@ -33,6 +37,7 @@ export class HiveCycle<
       pollingInterval: options.pollingInterval || 1000,
       maxConcurrency: options.maxConcurrency || 1,
       logger: options.logger || console,
+      healthPort: options.healthPort,
     };
     this.queue = this.options.queue;
   }
@@ -42,7 +47,7 @@ export class HiveCycle<
    */
   public registerHandler<K extends keyof TaskMap & string>(
     type: K,
-    handler: TaskHandler<TaskMap[K]>
+    handler: TaskHandler<TaskMap[K]>,
   ): void {
     this.handlers.set(type, handler as TaskHandler);
   }
@@ -53,7 +58,7 @@ export class HiveCycle<
   public async enqueue<K extends keyof TaskMap & string>(
     type: K,
     payload: TaskMap[K],
-    options?: Partial<Task>
+    options?: Partial<Task>,
   ): Promise<string> {
     const task: Task<TaskMap[K]> = {
       id: generateId(),
@@ -73,6 +78,11 @@ export class HiveCycle<
     if (this.isRunning) return;
     this.isRunning = true;
     this.options.logger.log("HiveCycle engine started.");
+
+    if (this.options.healthPort) {
+      this.startHealthServer(this.options.healthPort);
+    }
+
     this.loop();
   }
 
@@ -82,6 +92,40 @@ export class HiveCycle<
   public stop(): void {
     this.isRunning = false;
     this.options.logger.log("HiveCycle engine stopping...");
+    this.stopHealthServer();
+  }
+
+  private startHealthServer(port: number): void {
+    this.server = createServer((req: IncomingMessage, res: ServerResponse) => {
+      if (req.url === "/health" && req.method === "GET") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            status: "ok",
+            running: this.isRunning,
+            activeCount: this.activeCount,
+          }),
+        );
+      } else {
+        res.writeHead(404);
+        res.end();
+      }
+    });
+
+    this.server.listen(port, () => {
+      this.options.logger.log(`Health check server listening on port ${port}`);
+    });
+
+    this.server.on("error", (err) => {
+      this.options.logger.error("Health server error:", err);
+    });
+  }
+
+  private stopHealthServer(): void {
+    if (this.server) {
+      this.server.close();
+      this.server = undefined;
+    }
   }
 
   private async loop(): Promise<void> {
@@ -131,7 +175,7 @@ export class HiveCycle<
           } catch (e) {
             this.options.logger.error(
               `Failed to automatically requeue task ${task.type}`,
-              e
+              e,
             );
           }
         };

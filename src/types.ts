@@ -40,6 +40,10 @@ export interface HiveCycleOptions {
   pollingInterval?: number;
   maxConcurrency?: number;
   logger?: Logger;
+  /**
+   * If provided, starts a health check HTTP server on this port.
+   */
+  healthPort?: number;
 }
 
 export interface Logger {
