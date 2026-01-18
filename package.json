@@ -2,8 +2,8 @@
     "name": "hive-cycle",
     "version": "0.2.1",
     "description": "A modular TypeScript framework for background task processing",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
     "files": [
         "dist/src",
         "README.md"
