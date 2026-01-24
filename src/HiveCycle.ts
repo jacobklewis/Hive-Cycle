@@ -71,7 +71,11 @@ export class HiveCycle<
       options?.instances && options.instances > 0 ? options.instances : 1;
     for (let i = 0; i < instances; i++) {
       // Enqueue multiple instances if specified
-      await this.queue.enqueue(task);
+      const instanceTask = {
+        ...task,
+        instanceIndex: i,
+      };
+      await this.queue.enqueue(instanceTask);
     }
     return task.id;
   }

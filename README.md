@@ -87,6 +87,20 @@ await app.enqueue(
 );
 ```
 
+### Multiple Instances
+
+You can queue multiple copies of the same task at once using the `instances` option. Each instance will have the same payload but can be processed independently. This is useful for splitting up work or running parallel jobs.
+
+```typescript
+await app.enqueue(
+  "process-chunk",
+  { chunkId: "123" },
+  {
+    instances: 5, // Will create 5 separate tasks
+  },
+);
+```
+
 ### Configuration
 
 You can pass options to the constructor to tune performance.

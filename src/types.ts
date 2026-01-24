@@ -4,6 +4,7 @@ export interface Task<T = any> {
   payload: T;
   retries?: number;
   instances?: number;
+  instanceIndex?: number;
   timestamp?: number;
   requeue?: boolean;
   requeueDelay?: number;
