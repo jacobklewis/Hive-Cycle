@@ -67,7 +67,12 @@ export class HiveCycle<
       timestamp: Date.now(),
       ...options,
     };
-    await this.queue.enqueue(task);
+    const instances =
+      options?.instances && options.instances > 0 ? options.instances : 1;
+    for (let i = 0; i < instances; i++) {
+      // Enqueue multiple instances if specified
+      await this.queue.enqueue(task);
+    }
     return task.id;
   }
 
@@ -188,6 +193,25 @@ export class HiveCycle<
       }
     } catch (err: any) {
       this.options.logger.error(`Task ${task.id} failed:`, err);
+
+      if (task.retries && task.retries > 0) {
+        const attemptsLeft = task.retries - 1;
+        this.options.logger.log(
+          `Retrying task ${task.id}. Attempts left: ${attemptsLeft}`,
+        );
+        const retryingTask = { ...task, retries: attemptsLeft };
+        try {
+          await this.queue.enqueue(retryingTask);
+          await this.queue.acknowledge(task.id);
+          return;
+        } catch (requeueErr) {
+          this.options.logger.error(
+            `Failed to requeue task ${task.id}`,
+            requeueErr,
+          );
+        }
+      }
+
       // Depending on the queue implementation, reject might be handled differently
       await this.queue.reject(task.id, err);
     } finally {
