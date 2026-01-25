@@ -1,6 +1,6 @@
 {
     "name": "hive-cycle",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "A modular TypeScript framework for background task processing",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -12,7 +12,10 @@
     "scripts": {
         "build": "tsc",
         "test": "echo \"No tests specified\" && exit 0",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build",
+        "exBasic": "ts-node example/basic.ts",
+        "exRequeue": "ts-node example/requeue.ts",
+        "exInstances": "ts-node example/instances.ts"
     },
     "keywords": [
         "queue",
@@ -26,6 +29,7 @@
     "license": "MIT",
     "devDependencies": {
         "typescript": "^5.0.0",
+        "ts-node": "^10.9.2",
         "@types/node": "^20.0.0"
     }
 }

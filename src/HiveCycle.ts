@@ -73,7 +73,10 @@ export class HiveCycle<
       // Enqueue multiple instances if specified
       const instanceTask = {
         ...task,
-        instanceIndex: i,
+        instanceIndex:
+          instances === 1 && options?.instanceIndex !== undefined
+            ? options.instanceIndex
+            : i,
       };
       await this.queue.enqueue(instanceTask);
     }
@@ -180,6 +183,7 @@ export class HiveCycle<
             await this.enqueue(task.type as any, task.payload, {
               requeue: true,
               requeueDelay: task.requeueDelay,
+              instanceIndex: task.instanceIndex,
             });
           } catch (e) {
             this.options.logger.error(
